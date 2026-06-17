@@ -1,0 +1,24 @@
+services:
+  juice-shop:
+    image: bkimminich/juice-shop:latest
+    container_name: juice-shop
+    networks:
+      - hardening-network
+    restart: unless-stopped
+
+  nginx-hardened:
+    image: nginx:latest
+    container_name: nginx-hardened
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8090:80"
+    networks:
+      - hardening-network
+    depends_on:
+      - juice-shop
+    restart: unless-stopped
+
+networks:
+  hardening-network:
+    driver: bridge
